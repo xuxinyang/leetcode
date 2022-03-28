@@ -7,20 +7,6 @@
 // @lc code=start
 class Solution {
 public:
-    void dfs(vector<string>& res, string& num, string& path, int index) {
-        if (index == num.size()) {
-            res.push_back(path);
-            return;
-        }
-        for (int i = index; i < num.size(); i++) {
-            if (i != index && num[index] == num[i]) {
-                continue;
-            }
-            path.push_back(num[index]);
-            dfs(res, num, path, i + 1);
-            path.pop_back();
-        }
-    }
     vector<string> letterCombinations(string digits) {
         vector<string> res;
         if (digits.empty()) {
@@ -29,6 +15,40 @@ public:
         string str = "";
         dfs(digits, 0, str, res);
         return res;
+    }
+    void dfs(string digits, int index, string str, vector<string>& res) {
+        if (index == digits.size()) {
+            res.push_back(str);
+            return;
+        }
+        string letters = getLetters(digits[index]);
+        for (int i = 0; i < letters.size(); i++) {
+            str += letters[i];
+            dfs(digits, index + 1, str, res);
+            str.pop_back();
+        }
+    }
+    string getLetters(char c) {
+        switch (c) {
+            case '2':
+                return "abc";
+            case '3':
+                return "def";
+            case '4':
+                return "ghi";
+            case '5':
+                return "jkl";
+            case '6':
+                return "mno";
+            case '7':
+                return "pqrs";
+            case '8':
+                return "tuv";
+            case '9':
+                return "wxyz";
+            default:
+                return "";
+        }
     }
 };
 // @lc code=end
