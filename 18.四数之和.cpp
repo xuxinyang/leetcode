@@ -8,38 +8,56 @@
 class Solution {
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        vector<vector<int>> res;
-        if (nums.size() < 4) {
-            return res;
-        }
         sort(nums.begin(), nums.end());
-        for (int i = 0; i < nums.size() - 3; i++) {
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                continue;
+        int n = nums.size();
+        vector<vector<int>> res;
+        for (int i = 0; i < n; i++)
+        {
+            vector<vector<int>> tmp = threeSum(nums, i + 1, target - nums[i]);
+            for (auto &v : tmp)
+            {
+                v.push_back(nums[i]);
+                res.push_back(v);
             }
-            for (int j = i + 1; j < nums.size() - 2; j++) {
-                if (j > i + 1 && nums[j] == nums[j - 1]) {
-                    continue;
-                }
-                int left = j + 1, right = nums.size() - 1;
-                while (left < right) {
-                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
-                    if (sum == target) {
-                        res.push_back({nums[i], nums[j], nums[left], nums[right]});
-                        left++;
-                        right--;
-                        while (left < right && nums[left] == nums[left - 1]) {
-                            left++;
-                        }
-                        while (left < right && nums[right] == nums[right + 1]) {
-                            right--;
-                        }
-                    } else if (sum < target) {
-                        left++;
-                    } else {
-                        right--;
-                    }
-                }
+            while (i < n - 1 && nums[i] == nums[i + 1])
+            {
+                i++;
+            }
+        }
+        return res;
+    }
+    vector<vector<int>> threeSum(vector<int>& nums, int start, int target) {
+        int n = nums.size();
+        vector<vector<int>> res;
+        for (int i = start; i < n; ++i) 
+        {
+            vector<vector<int>> tmp = twoSum(nums, i + 1, target - nums[i]);
+            for (auto& v : tmp) 
+            {
+                v.push_back(nums[i]);
+                res.push_back(v);
+            }
+            while (i < n - 1 && nums[i] == nums[i + 1]) 
+            {
+                ++i;
+            }
+        }
+        return res;
+    }
+    vector<vector<int>> twoSum(vector<int>& nums, int start, int target) {
+        int low = start, high = nums.size() - 1;
+        vector<vector<int>> res;
+        while (low < high) 
+        {
+            int sum = nums[low] + nums[high];
+            int left = nums[low], right = nums[high];
+            if (sum < target) while (low < high && nums[low] == left) low++;
+            else if (sum > target) while (low < high && nums[high] == right) high--;
+            else 
+            {
+                res.push_back({left, right});
+                while (low < high && nums[low] == left) low++;
+                while (low < high && nums[high] == right) high--;
             }
         }
         return res;
