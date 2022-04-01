@@ -9,23 +9,21 @@ class Solution {
 public:
     int trap(vector<int>& height) {
         int n = height.size();
-        if (n == 0) return 0;
-        int m = height[0];
-        int ans = 0;
-        for (int i = 1; i < n; i++) {
-            if (height[i] > m) m = height[i];
-            else {
-                ans += m - height[i];
+        int l = 0, r = n - 1;
+        int res = 0;
+        int left_max = 0, right_max = 0;
+        while (l < r) {
+            left_max = max(left_max, height[l]);
+            right_max = max(right_max, height[r]);
+            if (left_max < right_max) {
+                res += left_max - height[l];
+                l++;
+            } else {
+                res += right_max - height[r];
+                r--;
             }
         }
-        m = height[n - 1];
-        for (int i = n - 2; i >= 0; i--) {
-            if (height[i] > m) m = height[i];
-            else {
-                ans += m - height[i];
-            }
-        }
-        return ans;
+        return res;
     }
 };
 // @lc code=end
