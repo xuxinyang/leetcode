@@ -8,16 +8,22 @@
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
-        if (prices.empty()) return 0;
         int n = prices.size();
-        vector<int> dp(n, 0);
+        if (n == 0) return 0;
+        int dp[n];
         dp[0] = 0;
         int minn = prices[0];
-        for (int i = 1; i < n; ++i) {
-            minn = min(minn, prices[i]);
+        for (int i = 1; i < n; i++) {
             dp[i] = max(dp[i - 1], prices[i] - minn);
+            minn = min(minn, prices[i]);
         }
-        return dp[n - 1];
+        int maxn = prices[n - 1];
+        int res = 0;
+        for (int i = n - 2; i >= 0; i--) {
+            res = max(res, maxn - prices[i]);
+            maxn = max(maxn, prices[i]);
+        }
+        return max(res, dp[n - 1]);
     }
 };
 // @lc code=end
