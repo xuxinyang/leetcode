@@ -27,6 +27,24 @@ public:
         }
         return l;
     }
+private:
+    bool check(vector<int>& nums, int target, int m) {
+        int n = nums.size();
+        int cnt = 1;
+        int sum = 0;
+        for (int i = 0; i < n; ++i) {
+            if (sum + nums[i] > target) {
+                sum = nums[i];
+                cnt++;
+                if (cnt > m) return false;
+            }
+            else {
+                sum += nums[i];
+            }
+        }
+        return true;
+    }
+
 };
 // @lc code=end
 
