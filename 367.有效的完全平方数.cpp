@@ -8,13 +8,16 @@
 class Solution {
 public:
     bool isPerfectSquare(int num) {
+        if (num == 1) return true;
         int l = 1;
         int r = num;
         while (l <= r) {
             int mid = l + (r - l) / 2;
-            if (mid * mid == num) {
-                return true;
-            } else if (mid * mid < num) {
+            int t = num / mid;
+            if (mid == t) {
+                if (num % mid == 0) return true;
+                l = mid + 1;
+            } else if (t > mid) {
                 l = mid + 1;
             } else {
                 r = mid - 1;
