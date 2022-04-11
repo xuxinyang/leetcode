@@ -8,13 +8,12 @@
 class Solution {
 public:
     int getSum(int a, int b) {
-        int res = 0;
-        while (b) {
-            res ^= a ^ b;
-            b = (a & b) << 1;
-            a = res;
+        while (b != 0) {
+            unsigned int carry = (unsigned int)(a & b) << 1;
+            a = a ^ b;
+            b = carry;
         }
-        return res;
+        return a;
     }
 };
 // @lc code=end
