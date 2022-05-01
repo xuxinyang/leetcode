@@ -8,41 +8,36 @@
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
-        vector<int> res;
-        if (s.size() < p.size()) {
-            return res;
+        int sLen = s.size(), pLen = p.size();
+
+        if (sLen < pLen) {
+            return vector<int>();
         }
-        unordered_map<char, int> map;
-        for (char c : p) {
-            map[c]++;
+
+        vector<int> ans;
+        vector<int> sCount(26);
+        vector<int> pCount(26);
+        for (int i = 0; i < pLen; ++i) {
+            ++sCount[s[i] - 'a'];
+            ++pCount[p[i] - 'a'];
         }
-        int left = 0, right = 0;
-        int count = p.size();
-        while (right < s.size()) {
-            char c = s[right];
-            if (map.count(c)) {
-                map[c]--;
-                if (map[c] == 0) {
-                    count--;
-                }
-            }
-            right++;
-            while (count == 0) {
-                if (right - left == p.size()) {
-                    res.push_back(left);
-                }
-                char d = s[left];
-                if (map.count(d)) {
-                    map[d]++;
-                    if (map[d] > 0) {
-                        count++;
-                    }
-                }
-                left++;
+
+        if (sCount == pCount) {
+            ans.emplace_back(0);
+        }
+
+        for (int i = 0; i < sLen - pLen; ++i) {
+            --sCount[s[i] - 'a'];
+            ++sCount[s[i + pLen] - 'a'];
+
+            if (sCount == pCount) {
+                ans.emplace_back(i + 1);
             }
         }
-        return res;
+
+        return ans;
     }
 };
+
 // @lc code=end
 
