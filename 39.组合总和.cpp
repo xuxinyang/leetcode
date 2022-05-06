@@ -11,7 +11,7 @@ public:
         vector<vector<int>> ans;
         vector<int> path;
         sort(candidates.begin(), candidates.end());
-        combinationSum(candidates, target, 0, path, ans);
+        combinationSum(candidates, target, 0, path, ans);   // 因为candidates是有序的，所以可以直接从第一个数开始
         return ans;
     }
 private:
