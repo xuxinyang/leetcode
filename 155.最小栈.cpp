@@ -6,25 +6,39 @@
 
 // @lc code=start
 class MinStack {
+private:
+    stack<int> s;
+    vector<int> v;
 public:
+    /** initialize your data structure here. */
     MinStack() {
-
+        
     }
     
     void push(int val) {
-
+        if(s.empty()){
+            v.push_back(val);
+        }else{
+            if(val < v.back()){
+                v.push_back(val);
+            }else{
+                v.push_back(v.back());
+            }
+        }
+        s.push(val);
     }
     
     void pop() {
-
+        s.pop();
+        v.pop_back();
     }
     
     int top() {
-
+        return s.top();
     }
     
     int getMin() {
-
+        return v.back();
     }
 };
 
