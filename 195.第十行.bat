@@ -1,0 +1,1 @@
+sed '1,9d' file.txt | sed '2,$d'
