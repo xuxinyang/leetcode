@@ -19,26 +19,21 @@
 class Solution {
 public:
     vector<string> binaryTreePaths(TreeNode* root) {
-        vector<string> res;
-        if (root == NULL) {
-            return res;
-        }
-        string path;
-        dfs(root, path, res);
-        return res;
+        vector<string> paths;
+        dfs(root, "", paths);
+        return paths;
     }
 private:
-    void dfs(TreeNode* root, string& path, vector<string>& res) {
-        if (root == NULL) {
-            return;
-        }
-        path += to_string(root->val);
-        if (root->left == NULL && root->right == NULL) {
-            res.push_back(path);
-        } else {
-            path += "->";
-            dfs(root->left, path, res);
-            dfs(root->right, path, res);
+    void dfs(TreeNode* root, string path, vector<string>& res) {
+        if (root != nullptr) {
+            path += to_string(root->val);
+            if (root->left == nullptr && root->right == nullptr) {
+                res.push_back(path);
+            } else {
+                path += "->";
+                dfs(root->left, path, res);
+                dfs(root->right, path, res);
+            }
         }
     }
 };
