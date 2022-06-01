@@ -8,14 +8,14 @@
 class Solution {
 public:
     int numPrimeArrangements(int n) {
-        int res = 0;
+        long long res = 0;
         int cnt = 0;
         for (int i = 2; i <= n; i++) {
             if (isPrime(i)) {
                 cnt++;
             }
         }
-        res = cnt * factorial(n - cnt);
+        res = factorial(cnt) * factorial(n - cnt) % 1000000007;
         return res;
     }
 private:
@@ -33,15 +33,16 @@ private:
         }
         return true;
     }
-    int factorial(int n) {
+    long long factorial(int n) {
         if (n == 0) {
             return 1;
         }
-        int res = 1;
+        long long res = 1;
         for (int i = 1; i <= n; i++) {
             res *= i;
+            res %= 1000000007;
         }
-        return res;
+        return res % 1000000007;
     }
 };
 // @lc code=end
