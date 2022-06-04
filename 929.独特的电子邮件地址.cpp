@@ -8,22 +8,21 @@
 class Solution {
 public:
     int numUniqueEmails(vector<string>& emails) {
-        unordered_set<string> s;
-        for (auto email : emails) {
-            int i = 0;
-            while (email[i] != '@') {
-                if (email[i] == '+') {
-                    ++i;
-                    while (email[i] != '@') {
-                        ++i;
-                    }
-                } else {
-                    ++i;
+        unordered_set<string> res;
+        for (auto &email : emails) {
+            string local;
+            for (char c: email)
+            {
+                if (c == '+' || c == '@') {
+                    break;
+                }
+                if (c != '.') {
+                    local += c;
                 }
             }
-            s.insert(email.substr(0, i));
+            res.insert(local + email.substr(email.find('@')));
         }
-        return s.size();        
+        return res.size();
     }
 };
 // @lc code=end
