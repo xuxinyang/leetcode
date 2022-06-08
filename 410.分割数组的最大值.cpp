@@ -9,42 +9,21 @@ class Solution {
 public:
     int splitArray(vector<int>& nums, int m) {
         int n = nums.size();
-        if (n == 0) return 0;
-        if (n == 1) return nums[0];
-        if (m == 1) return *max_element(nums.begin(), nums.end());
-        int l = 0, r = *max_element(nums.begin(), nums.end());
-        while (l <= r)
-        {
-            int mid = l + (r - l) / 2;
-            if (check(nums, mid, m))
-            {
-                r = mid - 1;
-            }
-            else
-            {
-                l = mid + 1;
+        vector<vector<long long>> f(n + 1, vector<long long>(m + 1, LLONG_MAX));
+        vector<long long> sub(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            sub[i + 1] = sub[i] + nums[i];
+        }
+        f[0][0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= min(i, m); j++) {
+                for (int k = 0; k < i; k++) {
+                    f[i][j] = min(f[i][j], max(f[k][j - 1], sub[i] - sub[k]));
+                }
             }
         }
-        return l;
+        return (int)f[n][m];
     }
-private:
-    bool check(vector<int>& nums, int target, int m) {
-        int n = nums.size();
-        int cnt = 1;
-        int sum = 0;
-        for (int i = 0; i < n; ++i) {
-            if (sum + nums[i] > target) {
-                sum = nums[i];
-                cnt++;
-                if (cnt > m) return false;
-            }
-            else {
-                sum += nums[i];
-            }
-        }
-        return true;
-    }
-
 };
 // @lc code=end
 
