@@ -7,30 +7,33 @@
 // @lc code=start
 class Solution {
 public:
+    static constexpr int MOD = 1'000'000'007;
+
     int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
-        int mod = 1e9 + 7;
-        vector<vector<vector<int>>> dp(m, vector<vector<int>>(n, vector<int>(maxMove + 1, 0)));
-        dp[startRow][startColumn][0] = 1;
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                for (int k = 0; k <= maxMove; ++k) {
-                    if (i > 0) {
-                        dp[i][j][k] += dp[i - 1][j][k];
+        vector<vector<int>> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int outCounts = 0;
+        vector<vector<int>> dp(m, vector<int>(n));
+        dp[startRow][startColumn] = 1;
+        for (int i = 0; i < maxMove; i++) {
+            vector<vector<int>> dpNew(m, vector<int>(n));
+            for (int j = 0; j < m; j++) {
+                for (int k = 0; k < n; k++) {
+                    int count = dp[j][k];
+                    if (count > 0) {
+                        for (auto& direction : directions) {
+                            int j1 = j + direction[0], k1 = k + direction[1];
+                            if (j1 >= 0 && j1 < m && k1 >= 0 && k1 < n) {
+                                dpNew[j1][k1] = (dpNew[j1][k1] + count) % MOD;
+                            } else {
+                                outCounts = (outCounts + count) % MOD;
+                            }
+                        }
                     }
-                    if (j > 0) {
-                        dp[i][j][k] += dp[i][j - 1][k];
-                    }
-                    if (i < m - 1) {
-                        dp[i][j][k] += dp[i + 1][j][k];
-                    }
-                    if (j < n - 1) {
-                        dp[i][j][k] += dp[i][j + 1][k];
-                    }
-                    dp[i][j][k] %= mod;
                 }
             }
+            dp = dpNew;
         }
-        return dp[m - 1][n - 1][maxMove];
+        return outCounts;
     }
 };
 // @lc code=end
