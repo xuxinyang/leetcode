@@ -19,13 +19,16 @@
 class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
-        int cnt = 0;
-        TreeNode *node = root;
-        while (node) {
-            cnt++;
-            if (k == cnt) return node->val;
-            if (k < cnt) node = node->right;
-            else node = node->left;
+        stack<TreeNode*> s;
+        while (root || !s.empty()) {
+            while (root) {
+                s.push(root);
+                root = root->left;
+            }
+            root = s.top();
+            s.pop();
+            if (--k == 0) return root->val;
+            root = root->right;
         }
         return -1;
     }
