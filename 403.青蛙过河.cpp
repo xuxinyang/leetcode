@@ -7,24 +7,30 @@
 // @lc code=start
 class Solution {
 public:
-    bool canCross(vector<int>& stones) {
-        int n = stones.size();
-        if (n == 0) return true;
-        vector<vector<int>> dp(n, vector<int>(n, 0));
-        for (int i = 0; i < n; ++i) {
-            dp[i][i] = 1;
+    vector<unordered_map<int, int>> rec;
+
+    bool dfs(vector<int>& stones, int i, int lastDis) {
+        if (i == stones.size() - 1) {
+            return true;
         }
-        for (int len = 2; len <= n; ++len) {
-            for (int i = 0; i + len - 1 < n; ++i) {
-                int j = i + len - 1;
-                for (int k = i + 1; k < j; ++k) {
-                    if (dp[i][k - 1] && dp[k][j - 1]) {
-                        dp[i][j] = max(dp[i][j], dp[i][k - 1] + dp[k][j - 1] + stones[k] - stones[i]);
-                    }
+        if (rec[i].count(lastDis)) {
+            return rec[i][lastDis];
+        }
+        for (int curDis = lastDis - 1; curDis <= lastDis + 1; curDis++) {
+            if (curDis > 0) {
+                int j = lower_bound(stones.begin(), stones.end(), curDis + stones[i]) - stones.begin();
+                if (j != stones.size() && stones[j] == curDis + stones[i] && dfs(stones, j, curDis)) {
+                    return rec[i][lastDis] = true;
                 }
             }
         }
-        return dp[0][n - 1] > 0;
+        return rec[i][lastDis] = false;
+    }
+
+    bool canCross(vector<int>& stones) {
+        int n = stones.size();
+        rec.resize(n);
+        return dfs(stones, 0, 0);
     }
 };
 // @lc code=end
