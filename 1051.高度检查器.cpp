@@ -8,17 +8,15 @@
 class Solution {
 public:
     int heightChecker(vector<int>& heights) {
-        vector<int> dp(101, 0);
-        for (int i = 0; i < heights.size(); i++) {
-            dp[heights[i]]++;
-        }
+        vector<int> ans(101, 0);
         int res = 0;
-        for (int i = 1; i < dp.size(); i++) {
-            int cnt = dp[i];
-            while (cnt--) {
-                if (heights[res++] != i) {
-                    res++;
-                }
+        for (int i = 0; i < heights.size(); i++) {
+            ans[i] = heights[i];
+        }
+        sort(heights.begin(), heights.end());
+        for (int i = 0; i < heights.size(); i++) {
+            if (heights[i] != ans[i]) {
+                res++;
             }
         }
         return res;
