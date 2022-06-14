@@ -17,38 +17,48 @@
  */
 class Solution {
 public:
+    // 翻转一个子链表，并且返回新的头与尾
+    pair<ListNode*, ListNode*> myReverse(ListNode* head, ListNode* tail) {
+        ListNode* prev = tail->next;
+        ListNode* p = head;
+        while (prev != tail) {
+            ListNode* nex = p->next;
+            p->next = prev;
+            prev = p;
+            p = nex;
+        }
+        return {tail, head};
+    }
+
     ListNode* reverseKGroup(ListNode* head, int k) {
-        if (!head || k == 1) {
-            return head;
-        }
-        ListNode* dummy = new ListNode(0);
-        dummy->next = head;
-        ListNode* pre = dummy;
-        ListNode* cur = head;
-        ListNode* next = head->next;
-        int count = 0;
-        while (next) {
-            count++;
-            if (count == k) {
-                pre = reverse(pre, cur);
-                count = 0;
+        ListNode* hair = new ListNode(0);
+        hair->next = head;
+        ListNode* pre = hair;
+
+        while (head) {
+            ListNode* tail = pre;
+            // 查看剩余部分长度是否大于等于 k
+            for (int i = 0; i < k; ++i) {
+                tail = tail->next;
+                if (!tail) {
+                    return hair->next;
+                }
             }
-            pre = cur;
-            cur = next;
-            next = next->next;
+            ListNode* nex = tail->next;
+            // 这里是 C++17 的写法，也可以写成
+            // pair<ListNode*, ListNode*> result = myReverse(head, tail);
+            // head = result.first;
+            // tail = result.second;
+            tie(head, tail) = myReverse(head, tail);
+            // 把子链表重新接回原链表
+            pre->next = head;
+            tail->next = nex;
+            pre = tail;
+            head = tail->next;
         }
-        if (count == k) {
-            pre = reverse(pre, cur);
-        }
-        return dummy->next;
+
+        return hair->next;
     }
-    ListNode* reverse(ListNode* pre, ListNode* cur) {
-        ListNode* next = cur->next;
-        cur->next = pre->next;
-        pre->next = cur;
-        return next;
-    }
-    
 };
 // @lc code=end
 
