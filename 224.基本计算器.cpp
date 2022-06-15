@@ -4,39 +4,42 @@
  * [224] 基本计算器
  */
 
-// @lc code=start
+// @lc code=startclass Solution {
 class Solution {
 public:
     int calculate(string s) {
-        int n = s.size();
+        stack<int> ops;
+        ops.push(1);
+        int sign = 1;
+
+        int ret = 0;
+        int n = s.length();
         int i = 0;
-        while (i < n && s[i] == ' ') i++;
-        if (i < n && (s[i] == '+' || s[i] == '-')) i++;
-        bool num = false;
-        while (i < n && isdigit(s[i])) {
-            num = true;
-            i++;
-        }
-        if (i < n && s[i] == '.') {
-            i++;
-            while (i < n && isdigit(s[i])) {
-                num = true;
+        while (i < n) {
+            if (s[i] == ' ') {
                 i++;
+            } else if (s[i] == '+') {
+                sign = ops.top();
+                i++;
+            } else if (s[i] == '-') {
+                sign = -ops.top();
+                i++;
+            } else if (s[i] == '(') {
+                ops.push(sign);
+                i++;
+            } else if (s[i] == ')') {
+                ops.pop();
+                i++;
+            } else {
+                long num = 0;
+                while (i < n && s[i] >= '0' && s[i] <= '9') {
+                    num = num * 10 + s[i] - '0';
+                    i++;
+                }
+                ret += sign * num;
             }
         }
-        if (i < n && s[i] == 'e') {
-            i++;
-            if (i < n && (s[i] == '+' || s[i] == '-')) i++;
-            bool exp = false;
-            while (i < n && isdigit(s[i])) {
-                exp = true;
-                i++;
-            }
-            if (!exp) return 0;
-        }
-        while (i < n && s[i] == ' ') i++;
-        if (!num || i != n) return 0;
-        return 1;
+        return ret;
     }
 };
 // @lc code=end
