@@ -19,18 +19,25 @@
 class Solution {
 public:
     int findSecondMinimumValue(TreeNode* root) {
-        if (!root) {
-            return -1;
-        }
-        int left = findSecondMinimumValue(root->left);
-        int right = findSecondMinimumValue(root->right);
-        if (left == -1) {
-            return right == -1 ? root->val : min(root->val, right);
-        }
-        if (right == -1) {
-            return min(root->val, left);
-        }
-        return min(min(root->val, left), right);
+        int ans = -1;
+        int rootvalue = root->val;
+
+        function<void(TreeNode*)> dfs = [&](TreeNode* node) {
+            if (!node) {
+                return;
+            }
+            if (ans != -1 && node->val >= ans) {
+                return;
+            }
+            if (node->val > rootvalue) {
+                ans = node->val;
+            }
+            dfs(node->left);
+            dfs(node->right);
+        };
+
+        dfs(root);
+        return ans;
     }
 };
 // @lc code=end
