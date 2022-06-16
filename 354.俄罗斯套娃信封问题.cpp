@@ -8,21 +8,28 @@
 class Solution {
 public:
     int maxEnvelopes(vector<vector<int>>& envelopes) {
+        if (envelopes.empty()) {
+            return 0;
+        }
+        
         int n = envelopes.size();
-        if (n == 0) return 0;
-        sort(envelopes.begin(), envelopes.end(), [](vector<int>& a, vector<int>& b) {
-            return a[0] < b[0] || (a[0] == b[0] && a[1] > b[1]);
+        sort(envelopes.begin(), envelopes.end(), [](const auto& e1, const auto& e2) {
+            return e1[0] < e2[0] || (e1[0] == e2[0] && e1[1] > e2[1]);
         });
-        vector<int> dp(n, 1);
+
+        vector<int> f = {envelopes[0][1]};
         for (int i = 1; i < n; ++i) {
-            for (int j = 0; j < i; ++j) {
-                if (envelopes[i][0] > envelopes[j][0] && envelopes[i][1] > envelopes[j][1]) {
-                    dp[i] = max(dp[i], dp[j] + 1);
-                }
+            if (int num = envelopes[i][1]; num > f.back()) {
+                f.push_back(num);
+            }
+            else {
+                auto it = lower_bound(f.begin(), f.end(), num);
+                *it = num;
             }
         }
-        return *max_element(dp.begin(), dp.end());
+        return f.size();
     }
 };
+
 // @lc code=end
 
