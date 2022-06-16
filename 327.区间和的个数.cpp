@@ -7,29 +7,58 @@
 // @lc code=start
 class Solution {
 public:
-    int countRangeSum(vector<int>& nums, int lower, int upper) {
-        int n = nums.size();
-        if (n == 0) return 0;
-        vector<long> sums(n + 1, 0);
-        for (int i = 0; i < n; i++) {
-            sums[i + 1] = sums[i] + nums[i];
+    int countRangeSumRecursive(vector<long>& sum, int lower, int upper, int left, int right) {
+        if (left == right) {
+            return 0;
+        } else {
+            int mid = (left + right) / 2;
+            int n1 = countRangeSumRecursive(sum, lower, upper, left, mid);
+            int n2 = countRangeSumRecursive(sum, lower, upper, mid + 1, right);
+            int ret = n1 + n2;
+
+            // 首先统计下标对的数量
+            int i = left;
+            int l = mid + 1;
+            int r = mid + 1;
+            while (i <= mid) {
+                while (l <= right && sum[l] - sum[i] < lower) l++;
+                while (r <= right && sum[r] - sum[i] <= upper) r++;
+                ret += (r - l);
+                i++;
+            }
+
+            // 随后合并两个排序数组
+            vector<long> sorted(right - left + 1);
+            int p1 = left, p2 = mid + 1;
+            int p = 0;
+            while (p1 <= mid || p2 <= right) {
+                if (p1 > mid) {
+                    sorted[p++] = sum[p2++];
+                } else if (p2 > right) {
+                    sorted[p++] = sum[p1++];
+                } else {
+                    if (sum[p1] < sum[p2]) {
+                        sorted[p++] = sum[p1++];
+                    } else {
+                        sorted[p++] = sum[p2++];
+                    }
+                }
+            }
+            for (int i = 0; i < sorted.size(); i++) {
+                sum[left + i] = sorted[i];
+            }
+            return ret;
         }
-        return countRangeSum(sums, 0, n, lower, upper);
     }
-private:
-    int countRangeSum(vector<long>& sums, int l, int r, int lower, int upper) {
-        if (l >= r) return 0;
-        int mid = l + (r - l) / 2;
-        int cnt = countRangeSum(sums, l, mid, lower, upper) + countRangeSum(sums, mid + 1, r, lower, upper);
-        int i = mid, j = mid + 1, k = mid + 1;
-        while (i >= l) {
-            while (k <= r && sums[k] - sums[i] < lower) k++;
-            cnt += k - j;
-            while (k <= r && sums[k] - sums[i] <= upper) k++;
-            i--;
-            j = k;
+
+    int countRangeSum(vector<int>& nums, int lower, int upper) {
+        long s = 0;
+        vector<long> sum{0};
+        for(auto& v: nums) {
+            s += v;
+            sum.push_back(s);
         }
-        return cnt;
+        return countRangeSumRecursive(sum, lower, upper, 0, sum.size() - 1);
     }
 };
 // @lc code=end
