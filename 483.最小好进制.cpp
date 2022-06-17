@@ -8,26 +8,20 @@
 class Solution {
 public:
     string smallestGoodBase(string n) {
-        long long num = stoll(n);
-        long long res = 1;
-        long long left = 1;
-        long long right = num;
-        while (left < right) {
-            long long mid = left + (right - left) / 2;
-            long long tmp = mid;
-            long long sum = 1;
-            while (tmp > 0) {
-                sum = sum * tmp % num;
-                tmp = tmp / 2;
+        long nVal = stol(n);
+        int mMax = floor(log(nVal) / log(2));
+        for (int m = mMax; m > 1; m--) {
+            int k = pow(nVal, 1.0 / m);
+            long mul = 1, sum = 1;
+            for (int i = 0; i < m; i++) {
+                mul *= k;
+                sum += mul;
             }
-            if (sum == 0) {
-                res = mid;
-                right = mid - 1;
-            } else {
-                left = mid + 1;
+            if (sum == nVal) {
+                return to_string(k);
             }
         }
-        return to_string(res);
+        return to_string(nVal - 1);
     }
 };
 // @lc code=end
