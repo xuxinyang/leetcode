@@ -7,16 +7,18 @@
 // @lc code=start
 class Solution {
 public:
-    int findRadius(vector<int>& houses, vector<int>& heaters) {
+    int findRadius(vector<int> &houses, vector<int> &heaters) {
+        int ans = 0;
         sort(heaters.begin(), heaters.end());
-        int res = 0;
-        for (int i = 0; i < houses.size(); ++i) {
-            int pos = lower_bound(heaters.begin(), heaters.end(), houses[i]) - heaters.begin();
-            int left = pos == 0 ? INT_MAX : heaters[pos - 1] - houses[i];
-            int right = pos == heaters.size() ? INT_MAX : houses[i] - heaters[pos];
-            res = max(res, min(left, right));
+        for (int house: houses) {
+            int j = upper_bound(heaters.begin(), heaters.end(), house) - heaters.begin();
+            int i = j - 1;
+            int rightDistance = j >= heaters.size() ? INT_MAX : heaters[j] - house;
+            int leftDistance = i < 0 ? INT_MAX : house - heaters[i];
+            int curDistance = min(leftDistance, rightDistance);
+            ans = max(ans, curDistance);
         }
-        return res;
+        return ans;
     }
 };
 // @lc code=end
