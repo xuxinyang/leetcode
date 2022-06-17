@@ -8,18 +8,16 @@
 class Solution {
 public:
     bool PredictTheWinner(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 0) return true;
-        vector<vector<int>> dp(n, vector<int>(n, 0));
-        for (int len = 1; len <= n; ++len) {
-            for (int i = 0; i <= n - len; ++i) {
-                int j = i + len - 1;
-                for (int k = i; k <= j; ++k) {
-                    dp[i][j] = max(dp[i][j], nums[k] + (k == i ? 0 : dp[i][k - 1]) + (k == j ? 0 : dp[k + 1][j]));
-                }
-            }
+        return total(nums, 0, nums.size() - 1, 1) >= 0;
+    }
+
+    int total(vector<int>& nums, int start, int end, int turn) {
+        if (start == end) {
+            return nums[start] * turn;
         }
-        return dp[0][n - 1] >= dp[1][n - 1] * 2;
+        int scoreStart = nums[start] * turn + total(nums, start + 1, end, -turn);
+        int scoreEnd = nums[end] * turn + total(nums, start, end - 1, -turn);
+        return max(scoreStart * turn, scoreEnd * turn) * turn;
     }
 };
 // @lc code=end
