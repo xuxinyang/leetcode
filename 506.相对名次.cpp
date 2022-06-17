@@ -8,21 +8,20 @@
 class Solution {
 public:
     vector<string> findRelativeRanks(vector<int>& score) {
-        vector<string> ans;
-        vector<pair<int, int>> v;
-        for (int i = 0; i < score.size(); ++i) {
-            v.push_back({score[i], i});
+        int n = score.size();
+        string desc[3] = {"Gold Medal", "Silver Medal", "Bronze Medal"};
+        vector<pair<int, int>> arr;
+
+        for (int i = 0; i < n; ++i) {
+            arr.emplace_back(make_pair(-score[i], i));
         }
-        sort(v.begin(), v.end(), greater<pair<int, int>>());
-        for (int i = 0; i < v.size(); ++i) {
-            if (i == 0) {
-                ans.push_back("Gold Medal");
-            } else if (i == 1) {
-                ans.push_back("Silver Medal");
-            } else if (i == 2) {
-                ans.push_back("Bronze Medal");
+        sort(arr.begin(), arr.end());
+        vector<string> ans(n);
+        for (int i = 0; i < n; ++i) {
+            if (i >= 3) {
+                ans[arr[i].second] = to_string(i + 1);
             } else {
-                ans.push_back(to_string(i + 1));
+                ans[arr[i].second] = desc[i];
             }
         }
         return ans;
