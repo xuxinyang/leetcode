@@ -8,20 +8,22 @@
 class Solution {
 public:
     bool checkSubarraySum(vector<int>& nums, int k) {
-        int n = nums.size();
-        if (n == 0) return false;
-        vector<int> dp(n, 0);
-        dp[0] = nums[0];
-        for (int i = 1; i < n; ++i) {
-            dp[i] = dp[i - 1] + nums[i];
+        int m = nums.size();
+        if (m < 2) {
+            return false;
         }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (k == 0) {
-                    if (dp[j] - dp[i] == 0) return true;
-                } else {
-                    if ((dp[j] - dp[i]) % k == 0) return true;
+        unordered_map<int, int> mp;
+        mp[0] = -1;
+        int remainder = 0;
+        for (int i = 0; i < m; i++) {
+            remainder = (remainder + nums[i]) % k;
+            if (mp.count(remainder)) {
+                int prevIndex = mp[remainder];
+                if (i - prevIndex >= 2) {
+                    return true;
                 }
+            } else {
+                mp[remainder] = i;
             }
         }
         return false;
