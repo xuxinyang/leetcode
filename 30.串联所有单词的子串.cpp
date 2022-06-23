@@ -7,44 +7,32 @@
 // @lc code=start
 class Solution {
 public:
-    vector<int> findSubstring(string s, vector<string>& words) {
+    vector<int> findSubstring(string &s, vector<string> &words) {
         vector<int> res;
-        if (words.empty()) return res;
-        int n = s.size(), m = words[0].size(), k = words.size();
-        unordered_map<string, int> dict;
-        for (string word: words)
-        {
-            ++dict[word];
-        }
-        for (int i = 0; i < m; ++i)
-        {
-            int left = i, count = 0;
-            unordered_map<string, int> tdict = dict;
-            for (int j = i; j <= n - m; j += m)
-            {
-                string word = s.substr(j, m);
-                if (tdict.count(word) == 0)
-                {
-                    tdict = dict;
-                    count = 0;
-                    left = j + m;
+        int m = words.size(), n = words[0].size(), ls = s.size();
+        for (int i = 0; i < n && i + m * n <= ls; ++i) {
+            unordered_map<string, int> differ;
+            for (int j = 0; j < m; ++j) {
+                ++differ[s.substr(i + j * n, n)];
+            }
+            for (string &word: words) {
+                if (--differ[word] == 0) {
+                    differ.erase(word);
                 }
-                else
-                {
-                    --tdict[word];
-                    if (tdict[word] >= 0) ++count;
-                    else
-                    {
-                        ++tdict[word];
-                        --count;
+            }
+            for (int start = i; start < ls - m * n + 1; start += n) {
+                if (start != i) {
+                    string word = s.substr(start + (m - 1) * n, n);
+                    if (++differ[word] == 0) {
+                        differ.erase(word);
                     }
-                    if (count == k)
-                    {
-                        res.push_back(left);
-                        ++left;
-                        ++count;
-                        tdict = dict;
+                    word = s.substr(start - n, n);
+                    if (--differ[word] == 0) {
+                        differ.erase(word);
                     }
+                }
+                if (differ.empty()) {
+                    res.emplace_back(start);
                 }
             }
         }

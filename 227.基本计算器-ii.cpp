@@ -8,37 +8,33 @@
 class Solution {
 public:
     int calculate(string s) {
-        int res = 0;
-        int sign = 1;
+        vector<int> stk;
+        char preSign = '+';
         int num = 0;
-        stack<int> stk;
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] == ' ') {
-                continue;
+        int n = s.length();
+        for (int i = 0; i < n; ++i) {
+            if (isdigit(s[i])) {
+                num = num * 10 + int(s[i] - '0');
             }
-            if (s[i] == '+') {
-                sign = 1;
-            } else if (s[i] == '-') {
-                sign = -1;
-            } else if (s[i] == '(') {
-                stk.push(res);
-                stk.push(sign);
-                res = 0;
-                sign = 1;
-            } else if (s[i] == ')') {
-                res *= stk.top();
-                stk.pop();
-                res += stk.top();
-                stk.pop();
-            } else {
-                num = num * 10 + s[i] - '0';
-                if (i == s.size() - 1 || s[i+1] == ' ') {
-                    res += sign * num;
-                    num = 0;
+            if (!isdigit(s[i]) && s[i] != ' ' || i == n - 1) {
+                switch (preSign) {
+                    case '+':
+                        stk.push_back(num);
+                        break;
+                    case '-':
+                        stk.push_back(-num);
+                        break;
+                    case '*':
+                        stk.back() *= num;
+                        break;
+                    default:
+                        stk.back() /= num;
                 }
+                preSign = s[i];
+                num = 0;
             }
         }
-        return res;
+        return accumulate(stk.begin(), stk.end(), 0);
     }
 };
 // @lc code=end
