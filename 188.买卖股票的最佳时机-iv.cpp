@@ -8,28 +8,30 @@
 class Solution {
 public:
     int maxProfit(int k, vector<int>& prices) {
+        if (prices.empty()) {
+            return 0;
+        }
+
         int n = prices.size();
-        if (n == 0) return 0;
-        if (k >= n / 2)
-        {
-            int res = 0;
-            for (int i = 1; i < n; ++i)
-            {
-                res += max(0, prices[i] - prices[i - 1]);
-            }
-            return res;
+        k = min(k, n / 2);
+        vector<int> buy(k + 1);
+        vector<int> sell(k + 1);
+
+        buy[0] = -prices[0];
+        sell[0] = 0;
+        for (int i = 1; i <= k; ++i) {
+            buy[i] = sell[i] = INT_MIN / 2;
         }
-        vector<int> dp(k + 1, 0);
-        for (int i = 1; i <= k; ++i)
-        {
-            int tmp = dp[i - 1] - prices[0];
-            for (int j = 1; j < n; ++j)
-            {
-                tmp = max(tmp, dp[i - 1] - prices[j]);
-                dp[i] = max(dp[i], prices[j] + tmp);
+
+        for (int i = 1; i < n; ++i) {
+            buy[0] = max(buy[0], sell[0] - prices[i]);
+            for (int j = 1; j <= k; ++j) {
+                buy[j] = max(buy[j], sell[j] - prices[i]);
+                sell[j] = max(sell[j], buy[j - 1] + prices[i]);   
             }
         }
-        return dp[k];
+
+        return *max_element(sell.begin(), sell.end());
     }
 };
 // @lc code=end
