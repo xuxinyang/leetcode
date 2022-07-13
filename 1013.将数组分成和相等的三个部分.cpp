@@ -7,26 +7,32 @@
 // @lc code=start
 class Solution {
 public:
-    bool canThreePartsEqualSum(vector<int>& arr) {
-        int n = arr.size();
-        int sum = 0;
-        for (int i = 0; i < n; i++) {
-            sum += arr[i];
-        }
-        if (sum % 3 != 0) {
+    bool canThreePartsEqualSum(vector<int>& A) {
+        int s = accumulate(A.begin(), A.end(), 0);
+        if (s % 3 != 0) {
             return false;
         }
-        int target = sum / 3;
-        int cur = 0;
-        int count = 0;
-        for (int i = 0; i < n; i++) {
-            cur += arr[i];
+        int target = s / 3;
+        int n = A.size(), i = 0, cur = 0;
+        while (i < n) {
+            cur += A[i];
             if (cur == target) {
-                count++;
-                cur = 0;
+                break;
             }
+            ++i;
         }
-        return count == 3;
+        if (cur != target) {
+            return false;
+        }
+        int j = i + 1;
+        while (j + 1 < n) {  // 需要满足最后一个数组非空
+            cur += A[j];
+            if (cur == target * 2) {
+                return true;
+            }
+            ++j;
+        }
+        return false;
     }
 };
 // @lc code=end
