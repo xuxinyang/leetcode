@@ -8,15 +8,20 @@
 class Solution {
 public:
     int bitwiseComplement(int n) {
-        int res = 0;
-        int i = 0;
-        while (n) {
-            res += (n & 1) ^ 1;
-            n >>= 1;
-            res <<= 1;
-            i++;
+        int high = 0;
+        for (int i = 1; i <= 30; i++)
+        {
+            if (n >= (1 << i))
+            {
+                high = i;
+            }
+            else
+            {
+                break;
+            }
         }
-        return res >> i;
+        int mask = (high == 30 ? 0x7fffffff : (1 << (high + 1)) - 1);
+        return n ^ mask;
     }
 };
 // @lc code=end
