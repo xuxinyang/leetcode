@@ -11,12 +11,11 @@ public:
         if (str1 + str2 != str2 + str1) {
             return "";
         }
-        int len = str1.size();
-        int i = 0;
-        while (i < len && str1[i] == str2[i]) {
-            i++;
-        }
-        return str1.substr(0, i);
+        int len1 = str1.size();
+        int len2 = str2.size();
+        int len = len1 < len2 ? len1 : len2;
+        int g = gcd(len1, len2);
+        return str1.substr(0, g);
     }
 };
 // @lc code=end
