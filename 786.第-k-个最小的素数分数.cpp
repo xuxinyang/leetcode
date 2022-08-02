@@ -5,26 +5,23 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
+    vector<int> kthSmallestPrimeFraction(vector<int> &arr, int k)
+    {
         int n = arr.size();
-        if (n == 0) return {};
-        vector<int> dp(n, 0);
-        int res = 0;
-        for (int i = n - 1; i >= 0; --i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (arr[i] > arr[j]) {
-                    dp[j]++;
-                }
-            }
-            res += dp[i];
-            if (res >= k) {
-                return {arr[i], arr[i + 1]};
+        vector<pair<int, int>> frac;
+        for (int i = 0; i < n - 1; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                frac.emplace_back(arr[i], arr[j]);
             }
         }
-        return {};
+        sort(frac.begin(), frac.end(), [&](const auto &x, const auto &y)
+             { return x.first * y.second < x.second * y.first; });
+        return {frac[k - 1].first, frac[k - 1].second};
     }
 };
 // @lc code=end
-
