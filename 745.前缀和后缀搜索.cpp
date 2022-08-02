@@ -5,68 +5,32 @@
  */
 
 // @lc code=start
-class WordFilter {
+class WordFilter
+{
+private:
+    unordered_map<string, int> dict;
+
 public:
-    WordFilter(vector<string>& words) {
-        int n = words.size();
-        if (n == 0) return;
-        vector<int> dp(n, 0);
-        for (int i = n - 1; i >= 0; --i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() > words[j].size()) {
-                    dp[j]++;
+    WordFilter(vector<string> &words)
+    {
+        for (int i = 0; i < words.size(); i++)
+        {
+            int m = words[i].size();
+            string word = words[i];
+            for (int prefixLength = 1; prefixLength <= m; prefixLength++)
+            {
+                for (int suffixLength = 1; suffixLength <= m; suffixLength++)
+                {
+                    string key = word.substr(0, prefixLength) + "#" + word.substr(m - suffixLength);
+                    dict[key] = i;
                 }
             }
         }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() < words[j].size()) {
-                    dp[i] += dp[j];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            dp[i] += i;
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[i] += dp[j];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[j] += dp[i];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[i] += dp[j];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[j]
     }
-    
-    int f(string prefix, string suffix) {
-        int n = dp.size();
-        int l = prefix.size(), r = suffix.size();
-        int res = 0;
-        for (int i = 0; i < n; ++i) {
-            if (words[i].size() < l) continue;
-            if (words[i].size() > r) continue;
-            if (words[i].substr(0, l) != prefix) continue;
-            if (words[i].substr(words[i].size() - r) != suffix) continue;
-            res += dp[i];
-        }
-        return res;
+    int f(string pref, string suff)
+    {
+        string target = pref + "#" + suff;
+        return dict.count(target) ? dict[target] : -1;
     }
 };
 
@@ -76,4 +40,3 @@ public:
  * int param_1 = obj->f(prefix,suffix);
  */
 // @lc code=end
-
