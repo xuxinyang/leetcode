@@ -5,52 +5,38 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    bool validTicTacToe(vector<string>& board) {
-        int n = board.size();
-        int m = board[0].size();
-        vector<int> row(n, 0);
-        vector<int> col(m, 0);
-        vector<int> diag(2, 0);
-        vector<int> anti_diag(2, 0);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < m; ++j) {
-                if (board[i][j] == 'X') {
-                    row[i]++;
-                    col[j]++;
-                    if (i == j) {
-                        diag[0]++;
-                    }
-                    if (i + j == n - 1) {
-                        anti_diag[0]++;
-                    }
-                } else if (board[i][j] == 'O') {
-                    row[i]--;
-                    col[j]--;
-                    if (i == j) {
-                        diag[1]--;
-                    }
-                    if (i + j == n - 1) {
-                        anti_diag[1]--;
-                    }
-                }
+    bool validTicTacToe(vector<string> &board)
+    {
+        int xCount = 0, oCount = 0;
+        for (string &row : board)
+        {
+            for (char c : row)
+            {
+                xCount = (c == 'X') ? (xCount + 1) : xCount;
+                oCount = (c == 'O') ? (oCount + 1) : oCount;
             }
         }
-        if (row[0] == 0 || row[1] == 0) {
-            return false;
+        return !((oCount != xCount && oCount != xCount - 1) ||
+                 (oCount != xCount - 1 && win(board, 'X')) ||
+                 (oCount != xCount && win(board, 'O')));
+    }
+
+    bool win(vector<string> &board, char p)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            if ((p == board[0][i] && p == board[1][i] && p == board[2][i]) ||
+                (p == board[i][0] && p == board[i][1] && p == board[i][2]))
+            {
+                return true;
+            }
         }
-        if (col[0] == 0 || col[1] == 0) {
-            return false;
-        }
-        if (diag[0] == 0 || diag[1] == 0) {
-            return false;
-        }
-        if (anti_diag[0] == 0 || anti_diag[1] == 0) {
-            return false;
-        }
-        return true;
+        return ((p == board[0][0] && p == board[1][1] && p == board[2][2]) ||
+                (p == board[0][2] && p == board[1][1] && p == board[2][0]));
     }
 };
-// @lc code=end
 
+// @lc code=end
