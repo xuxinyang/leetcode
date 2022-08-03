@@ -5,55 +5,40 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
+private:
+    char *cursor[26][50001];
+    int len[26];
+
 public:
-    int numMatchingSubseq(string s, vector<string>& words) {
-        int n = words.size();
-        if (n == 0) return 0;
-        vector<int> dp(n, 0);
-        for (int i = n - 1; i >= 0; --i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() > words[j].size()) {
-                    dp[j]++;
+    int numMatchingSubseq(string s, vector<string> &words)
+    {
+        memset(len, 0, sizeof(len));
+        for (int i = 0; i < words.size(); i++)
+        {
+            int c = words[i][0] - 'a';
+            cursor[c][len[c]++] = &words[i][0];
+        }
+        int ans = 0;
+        for (char c : s)
+        {
+            c -= 'a';
+            int k = len[c];
+            len[c] = 0;
+            for (int i = 0; i < k; i++)
+            {
+                char *next = cursor[c][i] + 1;
+                if (!*next)
+                    ans++;
+                else
+                {
+                    int d = *next - 'a';
+                    cursor[d][len[d]++] = next;
                 }
             }
         }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() < words[j].size()) {
-                    dp[i] += dp[j];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            dp[i] += i;
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[i] += dp[j];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[j] += dp[i];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[i] += dp[j];
-                }
-            }
-        }
-        for (int i = 0; i < n; ++i) {
-            for (int j = i + 1; j < n; ++j) {
-                if (words[i].size() == words[j].size()) {
-                    dp[j
+        return ans;
     }
 };
 // @lc code=end
-
