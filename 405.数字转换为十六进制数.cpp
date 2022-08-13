@@ -5,31 +5,27 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    string toHex(int num) {
-        // 处理正数和负数的情况
-        if (num == 0) return "0";
-        string res = "";
-        int n = 0;
-        if (num < 0) {
-            n = 1;
-            num = -num;
+    string toHex(int num)
+    {
+        if (num == 0)
+        {
+            return "0";
         }
-        while (num) {
-            int tmp = num & 15;
-            if (tmp < 10) {
-                res = to_string(tmp) + res;
-            } else {
-                res = char(tmp - 10 + 'a') + res;
+        string sb;
+        for (int i = 7; i >= 0; i--)
+        {
+            int val = (num >> (4 * i)) & 0xf;
+            if (sb.length() > 0 || val > 0)
+            {
+                char digit = val < 10 ? (char)('0' + val) : (char)('a' + val - 10);
+                sb.push_back(digit);
             }
-            num = num >> 4;
         }
-        if (n) {
-            res = "-" + res;
-        }
-        return res;
+        return sb;
     }
 };
-// @lc code=end
 
+// @lc code=end
