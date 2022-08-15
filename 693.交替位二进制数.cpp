@@ -5,12 +5,13 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    bool hasAlternatingBits(int n) {
-        int tmp = n ^ (n >> 1);
-        return tmp & (tmp + 1);
+    bool hasAlternatingBits(int n)
+    {
+        long tmp = n ^ (n >> 1);
+        return (tmp & (tmp + 1)) == 0;
     }
 };
 // @lc code=end
-
