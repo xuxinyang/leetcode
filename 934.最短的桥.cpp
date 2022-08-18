@@ -5,47 +5,78 @@
  */
 
 // @lc code=start
-class Solution {
-int dx[4] = {0, 1, 0, -1};
-int dy[4] = {1, 0, -1, 0};
+class Solution
+{
 public:
-    int shortestBridge(vector<vector<int>>& grid) {
-        int n = grid.size();
-        if (n == 0) return 0;
-        int m = grid[0].size();
-        if (m == 0) return 0;
-        vector<vector<bool>> visited(n, vector<bool>(m, false));
-        queue<pair<int, int>> q;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (grid[i][j] == 1) {
-                    q.push({i, j});
-                    visited[i][j] = true;
+    vector<int> direction{-1, 0, 1, 0, -1};
+
+    int shortestBridge(vector<vector<int>> &A)
+    {
+        int m = A.size(), n = A[0].size();
+        queue<pair<int, int>> points;
+        //使用dfs寻找第一个岛屿，并把1变成2
+        bool flipped = false;
+        for (int i(0); i < m; ++i)
+        {
+            if (flipped)
+                break;
+            for (int j(0); j < n; ++j)
+            {
+                if (A[i][j] == 1)
+                {
+                    dfs(points, A, m, n, i, j);
+                    flipped = true;
                     break;
                 }
             }
         }
-        int step = 0;
-        while (!q.empty()) {
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                int x = q.front().first;
-                int y = q.front().second;
-                q.pop();
-                for (int k = 0; k < 4; k++) {
-                    int nx = x + dx[k];
-                    int ny = y + dy[k];
-                    if (nx >= 0 && nx < n && ny >= 0 && ny < m && !visited[nx][ny] && grid[nx][ny] == 1) {
-                        visited[nx][ny] = true;
-                        q.push({nx, ny});
+        // bfs寻找第二个岛屿，把过程中的0变成2
+        int x, y;
+        int level = 0;
+        while (!points.empty())
+        {
+            ++level;
+            int n_points = points.size();
+            while (n_points--)
+            {
+                auto [r, c] = points.front();
+                points.pop();
+                for (int k(0); k < 4; ++k)
+                {
+                    x = r + direction[k], y = c + direction[k + 1];
+                    if (x >= 0 && y >= 0 && x < m && y < n)
+                    {
+                        if (A[x][y] == 2)
+                            continue;
+                        if (A[x][y] == 1)
+                            return level;
+                        points.push({x, y});
+                        A[x][y] = 2;
                     }
                 }
             }
-            step++;
-            if (step == 2) break;
         }
-        return step - 1;
+        return 0;
+    }
+
+    void dfs(queue<pair<int, int>> &points, vector<vector<int>> &grid, int m, int n,
+             int i, int j)
+    {
+        //先考察方向问题
+        if (i < 0 || j < 0 || i == m || j == n || grid[i][j] == 2)
+            return;
+        //再考虑别的推出方式
+        if (grid[i][j] == 0)
+        {
+            points.push({i, j});
+            return;
+        }
+        grid[i][j] = 2;
+        dfs(points, grid, m, n, i - 1, j);
+        dfs(points, grid, m, n, i + 1, j);
+        dfs(points, grid, m, n, i, j - 1);
+        dfs(points, grid, m, n, i, j + 1);
     }
 };
-// @lc code=end
 
+// @lc code=end

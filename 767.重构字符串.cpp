@@ -5,42 +5,66 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    string reorganizeString(string s) {
-        int n = s.size();
-        if (n <= 1) return s;
-        unordered_map<char, int> m;
-        for (char c : s) {
-            m[c]++;
+    string reorganizeString(string s)
+    {
+        if (s.length() < 2)
+        {
+            return s;
         }
-        vector<pair<char, int>> v;
-        for (auto p : m) {
-            v.push_back(p);
+        vector<int> counts(26, 0);
+        int maxCount = 0;
+        int length = s.length();
+        for (int i = 0; i < length; i++)
+        {
+            char c = s[i];
+            counts[c - 'a']++;
+            maxCount = max(maxCount, counts[c - 'a']);
         }
-        sort(v.begin(), v.end(), [](const pair<char, int>& a, const pair<char, int>& b) {
-            return a.second > b.second;
-        });
-        if (v[0].second > (n + 1) / 2) return "";
-        string res = "";
-        int i = 0;
-        while (i < n) {
-            res += v[0].first;
-            v[0].second--;
-            if (v[0].second == 0) {
-                v.erase(v.begin());
+        if (maxCount > (length + 1) / 2)
+        {
+            return "";
+        }
+        auto cmp = [&](const char &letter1, const char &letter2)
+        {
+            return counts[letter1 - 'a'] < counts[letter2 - 'a'];
+        };
+        priority_queue<char, vector<char>, decltype(cmp)> queue{cmp};
+        for (char c = 'a'; c <= 'z'; c++)
+        {
+            if (counts[c - 'a'] > 0)
+            {
+                queue.push(c);
             }
-            if (i < n - 1) {
-                res += v[0].first;
-                v[0].second--;
-                if (v[0].second == 0) {
-                    v.erase(v.begin());
-                }
-            }
-            i += 2;
         }
-        return res;
+        string sb = "";
+        while (queue.size() > 1)
+        {
+            char letter1 = queue.top();
+            queue.pop();
+            char letter2 = queue.top();
+            queue.pop();
+            sb += letter1;
+            sb += letter2;
+            int index1 = letter1 - 'a', index2 = letter2 - 'a';
+            counts[index1]--;
+            counts[index2]--;
+            if (counts[index1] > 0)
+            {
+                queue.push(letter1);
+            }
+            if (counts[index2] > 0)
+            {
+                queue.push(letter2);
+            }
+        }
+        if (queue.size() > 0)
+        {
+            sb += queue.top();
+        }
+        return sb;
     }
 };
 // @lc code=end
-
