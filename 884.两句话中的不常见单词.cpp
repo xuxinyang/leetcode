@@ -5,30 +5,35 @@
  */
 
 // @lc code=start
-class Solution {
+class Solution
+{
 public:
-    vector<string> uncommonFromSentences(string s1, string s2) {
-        unordered_map<string, int> m;
-        for (auto c : s1) {
-            if (c == ' ') {
-                continue;
+    vector<string> uncommonFromSentences(string s1, string s2)
+    {
+        unordered_map<string, int> freq;
+
+        auto insert = [&](const string &s)
+        {
+            stringstream ss(s);
+            string word;
+            while (ss >> word)
+            {
+                ++freq[move(word)];
             }
-            ++m[c];
-        }
-        for (auto c : s2) {
-            if (c == ' ') {
-                continue;
-            }
-            ++m[c];
-        }
+        };
+
+        insert(s1);
+        insert(s2);
+
         vector<string> ans;
-        for (auto p : m) {
-            if (p.second == 1) {
-                ans.push_back(p.first);
+        for (const auto &[word, occ] : freq)
+        {
+            if (occ == 1)
+            {
+                ans.push_back(word);
             }
         }
         return ans;
     }
 };
 // @lc code=end
-
