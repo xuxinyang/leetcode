@@ -18,7 +18,7 @@ public:
             string word;
             while (ss >> word)
             {
-                ++freq[move(word)];
+                ++freq[word];
             }
         };
 
