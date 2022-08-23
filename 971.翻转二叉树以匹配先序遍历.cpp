@@ -18,31 +18,38 @@
  */
 class Solution {
 public:
+    int i = 0; //记录当前访问的结点的索引
+    vector<int> res;
+    bool DFS(TreeNode* root, vector<int>& voyage) {
+        //如果树为空，肯定匹配
+        if (!root) {
+            return true;
+        } 
+        if (root->val!=voyage[i]) { //如果访问的结点和数组中对应值不相等，肯定不匹配
+            return false;
+        }
+        i++; //索引++
+
+        //如果当前结点匹配，那就要去判断左右子树是否匹配(先左后右)
+        if (DFS(root->left, voyage) && DFS(root->right, voyage)) {
+            return true;
+        }
+        if (DFS(root->right, voyage) && DFS(root->left, voyage)) {
+            res.push_back(root->val);
+            return true;
+        }
+        return false;
+    }
+
     vector<int> flipMatchVoyage(TreeNode* root, vector<int>& voyage) {
-        vector<int> ans;
-        if (!root) return ans;
-        if (root->val != voyage[0]) return ans;
-        if (root->left && root->left->val != voyage[1]) {
-            ans.push_back(root->val);
-            ans.push_back(root->left->val);
-            root->left = nullptr;
+        //匹配成功，返回res
+        if(DFS(root, voyage)) {
+            return res;
         }
-        if (root->right && root->right->val != voyage[2]) {
-            ans.push_back(root->val);
-            ans.push_back(root->right->val);
-            root->right = nullptr;
-        }
-        if (root->left) {
-            vector<int> left = flipMatchVoyage(root->left, vector<int>(voyage.begin()+1, voyage.begin()+3));
-            if (left.empty()) return ans;
-            ans.insert(ans.end(), left.begin(), left.end());
-        }
-        if (root->right) {
-            vector<int> right = flipMatchVoyage(root->right, vector<int>(voyage.begin()+3, voyage.end()));
-            if (right.empty()) return ans;
-            ans.insert(ans.end(), right.begin(), right.end());
-        }
-        return ans;
+        //匹配失败，返回-1
+        res.erase(res.begin(),res.end());
+        res.push_back(-1);
+        return res;
     }
 };
 // @lc code=end
