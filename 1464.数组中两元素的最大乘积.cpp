@@ -8,9 +8,20 @@
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
-        sort(nums.begin(), nums.end());
-        int n = nums.size();
-        return (nums[n-1]-1) * (nums[n-2]-1);
+        int first_max = 0, second_max = 0;
+        for (int i = 0; i < nums.size(); ++i)
+        {
+            if (nums[i] >= first_max)
+            {
+                second_max = first_max;
+                first_max = nums[i];
+            }
+            else if (nums[i] > second_max)
+            {
+                second_max = nums[i];
+            }
+        }
+        return (first_max - 1) * (second_max - 1);
     }
 };
 // @lc code=end
