@@ -12,7 +12,7 @@ public:
         vector<bool> res(n, false);
         int cur = 0;
         for (int i = 0; i < n; i++) {
-            cur = (cur << 1) + nums[i];
+            cur = ((cur << 1) + nums[i]) % 5;
             res[i] = (cur % 5 == 0);
         }
         return res;

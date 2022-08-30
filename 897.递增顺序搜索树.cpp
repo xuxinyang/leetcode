@@ -17,53 +17,27 @@
  * };
  */
 class Solution {
-
 public:
-    TreeNode* increasingBST(TreeNode* root) {
-        if (!root) return nullptr;
-        TreeNode* cur = root;
-        TreeNode* prev = nullptr;
-        TreeNode* head = nullptr;
-        while (cur) {
-            if (!cur->left) {
-                if (!head) {
-                    head = cur;
-                }
-                if (prev) {
-                    prev->right = cur->right;
-                    cur->left = nullptr;
-                    cur->right = nullptr;
-                    prev = cur;
-                } else {
-                    prev = cur;
-                }
-                cur = cur->right;
-            } else {
-                TreeNode* tmp = cur->left;
-                while (tmp->right && tmp->right != cur) {
-                    tmp = tmp->right;
-                }
-                if (!tmp->right) {
-                    tmp->right = cur;
-                    cur = cur->left;
-                } else {
-                    tmp->right = nullptr;
-                    if (!head) {
-                        head = cur;
-                    }
-                    if (prev) {
-                        prev->right = cur->right;
-                        cur->left = nullptr;
-                        cur->right = nullptr;
-                        prev = cur;
-                    } else {
-                        prev = cur;
-                    }
-                    cur = cur->right;
-                }
-            }
+    void inorder(TreeNode *node, vector<int> &res) {
+        if (node == nullptr) {
+            return;
         }
-        return head;
+        inorder(node->left, res);
+        res.push_back(node->val);
+        inorder(node->right, res);
+    }
+
+    TreeNode *increasingBST(TreeNode *root) {
+        vector<int> res;
+        inorder(root, res);
+
+        TreeNode *dummyNode = new TreeNode(-1);
+        TreeNode *currNode = dummyNode;
+        for (int value : res) {
+            currNode->right = new TreeNode(value);
+            currNode = currNode->right;
+        }
+        return dummyNode->right;
     }
 };
 // @lc code=end
