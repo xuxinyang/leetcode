@@ -6,42 +6,80 @@
 
 // @lc code=start
 class Solution {
+private:
+    static constexpr int BOUNDARY = 1000000;
+    static constexpr int dirs[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    
 public:
     bool isEscapePossible(vector<vector<int>>& blocked, vector<int>& source, vector<int>& target) {
-        int m = blocked.size();
-        int n = blocked[0].size();
-        vector<vector<int>> visited(m, vector<int>(n, 0));
-        queue<vector<int>> q;
-        q.push(source);
-        visited[source[0]][source[1]] = 1;
+        if (blocked.size() < 2) {
+            return true;
+        }
+        vector<int> rows, columns;
+        for (const auto& pos: blocked) {
+            rows.push_back(pos[0]);
+            columns.push_back(pos[1]);
+        }
+        rows.push_back(source[0]);
+        rows.push_back(target[0]);
+        columns.push_back(source[1]);
+        columns.push_back(target[1]);
+        
+        // 离散化
+        sort(rows.begin(), rows.end());
+        sort(columns.begin(), columns.end());
+        rows.erase(unique(rows.begin(), rows.end()), rows.end());
+        columns.erase(unique(columns.begin(), columns.end()), columns.end());
+        unordered_map<int, int> r_mapping, c_mapping;
+
+        int r_id = (rows[0] == 0 ? 0 : 1);
+        r_mapping[rows[0]] = r_id;
+        for (int i = 1; i < rows.size(); ++i) {
+            r_id += (rows[i] == rows[i - 1] + 1 ? 1 : 2);
+            r_mapping[rows[i]] = r_id;
+        }
+        if (rows.back() != BOUNDARY - 1) {
+            ++r_id;
+        }
+
+        int c_id = (columns[0] == 0 ? 0 : 1);
+        c_mapping[columns[0]] = c_id;
+        for (int i = 1; i < columns.size(); ++i) {
+            c_id += (columns[i] == columns[i - 1] + 1 ? 1 : 2);
+            c_mapping[columns[i]] = c_id;
+        }
+        if (columns.back() != BOUNDARY - 1) {
+            ++c_id;
+        }
+
+        vector<vector<int>> grid(r_id + 1, vector<int>(c_id + 1));
+        for (const auto& pos: blocked) {
+            int x = pos[0], y = pos[1];
+            grid[r_mapping[x]][c_mapping[y]] = 1;
+        }
+        
+        int sx = r_mapping[source[0]], sy = c_mapping[source[1]];
+        int tx = r_mapping[target[0]], ty = c_mapping[target[1]];
+
+        queue<pair<int, int>> q;
+        q.emplace(sx, sy);
+        grid[sx][sy] = 1;
         while (!q.empty()) {
-            vector<int> cur = q.front();
+            auto [x, y] = q.front();
             q.pop();
-            if (cur[0] == target[0] && cur[1] == target[1]) {
-                return true;
-            }
-            for (int i = 0; i < 4; i++) {
-                int x = cur[0] + dx[i];
-                int y = cur[1] + dy[i];
-                if (x >= 0 && x < m && y >= 0 && y < n && !visited[x][y] && !isBlocked(blocked, x, y)) {
-                    visited[x][y] = 1;
-                    q.push({x, y});
+            for (int d = 0; d < 4; ++d) {
+                int nx = x + dirs[d][0], ny = y + dirs[d][1];
+                if (nx >= 0 && nx <= r_id && ny >= 0 && ny <= c_id && grid[nx][ny] != 1) {
+                    if (nx == tx && ny == ty) {
+                        return true;
+                    }
+                    q.emplace(nx, ny);
+                    grid[nx][ny] = 1;
                 }
             }
         }
         return false;
     }
-private:
-    bool isBlocked(vector<vector<int>>& blocked, int x, int y) {
-        for (auto& b : blocked) {
-            if (b[0] == x && b[1] == y) {
-                return true;
-            }
-        }
-        return false;
-    }
-    const vector<int> dx = {0, 1, 0, -1};
-    const vector<int> dy = {1, 0, -1, 0};
 };
 // @lc code=end
 
