@@ -8,7 +8,6 @@
 class Solution {
 public:
     //题解1：动态规划，时间复杂度O(n^2)，空间复杂度O(n)
-    //思路与354. 俄罗斯套娃的题一模一样，就是题目背景换了，哈哈伪装者
     int findLongestChain_1(vector<vector<int>>& pairs) {
         if(pairs.empty())return 0;
         sort(pairs.begin(),pairs.end(),[](const vector<int>& a,const vector<int>& b){
