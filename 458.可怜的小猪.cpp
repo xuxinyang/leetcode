@@ -23,10 +23,12 @@ public:
         {
             combinations[i][0] = 1;
             combinations[i][i] = 1;
-            for (int j = 1; j < i; j++) {
+            for (int j = 1; j < i; j++) 
+            {
                 combinations[i][j] = combinations[i-1][j-1] + combinations[i-1][j];
             }
-            for (int j = 1; j <= iterations; j++) {
+            for (int j = 1; j <= iterations; j++) 
+            {
                 for (int k = 0; k <= i; k++) {
                     f[i][j] += f[k][j-1] * combinations[i][i-k];
                 }
