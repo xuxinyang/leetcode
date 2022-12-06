@@ -42,7 +42,7 @@ class Solution {
         int[] result = new int[nums.length];
         for (int i = 0; i < nums.length; i++) {
             productResult *= nums[i];
-            result[i] = productResult
+            result[i] = productResult;
         }
         for (int i = 0; i < nums.length; i++) {
             result[i] = productResult / nums[i];
