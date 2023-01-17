@@ -16,7 +16,7 @@ public:
             while (temp)
             {
                 j = j * 10 + temp % 10;
-                j /= 10;
+                temp /= 10;
             }
             res = (res + h[i-j]) % MOD;
             h[i-j] ++;
